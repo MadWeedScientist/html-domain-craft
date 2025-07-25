@@ -23,6 +23,8 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
     setError("")
     
     try {
+      console.log('Attempting login with email:', email)
+      
       // Verify admin credentials against database
       const { data, error } = await supabase
         .from('admin_users')
@@ -30,18 +32,28 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
         .eq('email', email)
         .single()
       
+      console.log('Database query result:', { data, error })
+      
       if (error || !data) {
+        console.log('No admin user found or error:', error)
         throw new Error('Invalid credentials')
       }
       
       // Simple password verification (in production, use proper hashing)
-      console.log('Expected hash:', btoa(password), 'Actual hash:', data.password_hash)
-      if (data.password_hash === btoa(password)) {
+      const expectedHash = btoa(password)
+      console.log('Password entered:', password)
+      console.log('Expected hash (btoa):', expectedHash)
+      console.log('Actual hash from DB:', data.password_hash)
+      console.log('Hashes match:', data.password_hash === expectedHash)
+      
+      if (data.password_hash === expectedHash) {
+        console.log('Login successful!')
         sessionStorage.setItem('adminLoggedIn', 'true')
         onLoginSuccess()
         setEmail("")
         setPassword("")
       } else {
+        console.log('Password mismatch!')
         throw new Error('Invalid credentials')
       }
     } catch (error) {
