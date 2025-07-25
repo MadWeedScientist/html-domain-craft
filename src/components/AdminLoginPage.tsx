@@ -19,6 +19,8 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('Form submitted!')
+    alert('Login attempt started')
     setIsLoading(true)
     setError("")
     
