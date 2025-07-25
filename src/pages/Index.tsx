@@ -42,8 +42,10 @@ const Index = () => {
       case 'submit':
         return <SubmitPage onSuccess={handleSubmitSuccess} />
       case 'adminLogin':
+        console.log('Rendering AdminLoginPage')
         return <AdminLoginPage onLoginSuccess={handleAdminLogin} />
       case 'admin':
+        console.log('Rendering AdminPage')
         return <AdminPage onLogout={handleAdminLogout} />
       default:
         return <HomePage onGetStarted={() => setCurrentPage('submit')} />

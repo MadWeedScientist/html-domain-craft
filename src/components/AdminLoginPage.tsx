@@ -12,6 +12,8 @@ interface AdminLoginPageProps {
 }
 
 export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
+  console.log('AdminLoginPage component loaded')
+  alert('AdminLoginPage loaded - if you see this, click OK and try logging in')
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
