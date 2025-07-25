@@ -1,24 +1,795 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>html-domain-craft</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shake Finder - Cannabis Business Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="A simple platform where licensed cannabis businesses in New Mexico & Oklahoma can showcase their shake to processors">
+    <meta property="og:title" content="Shake Finder - Cannabis Business Platform">
+    <meta property="og:description" content="A simple platform where licensed cannabis businesses in New Mexico & Oklahoma can showcase their shake to processors">
+    <meta property="og:url" content="https://your-domain.github.io">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Shake Finder">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(120 20% 97%)',
+                        foreground: 'hsl(120 10% 10%)',
+                        primary: 'hsl(142 76% 36%)',
+                        'primary-foreground': 'hsl(0 0% 98%)',
+                        secondary: 'hsl(120 20% 95%)',
+                        'secondary-foreground': 'hsl(120 10% 10%)',
+                        muted: 'hsl(120 20% 95%)',
+                        'muted-foreground': 'hsl(120 10% 50%)',
+                        accent: 'hsl(142 40% 90%)',
+                        'accent-foreground': 'hsl(142 76% 36%)',
+                        border: 'hsl(120 20% 88%)',
+                        input: 'hsl(120 20% 88%)',
+                        ring: 'hsl(142 76% 36%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
 
-    <meta property="og:title" content="html-domain-craft" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        .cannabis-leaf {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50,50 Q30,40 20,20 Q30,10 50,5 Q70,10 80,20 Q70,40 50,50 Z' fill='currentColor' opacity='0.1'/%3E%3C/svg%3E");
+        }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+        .dark {
+            --background: hsl(120 30% 8%);
+            --foreground: hsl(120 20% 95%);
+            --primary: hsl(142 60% 50%);
+            --primary-foreground: hsl(120 30% 8%);
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background-color: hsl(120 20% 97%); color: hsl(120 10% 10%);">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b" style="border-color: hsl(120 20% 88%);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center" style="background-color: hsl(142 76% 36%); color: hsl(0 0% 98%);">
+                        <i class="fas fa-cannabis text-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-semibold" style="color: hsl(120 10% 10%);">Shake Finder</h1>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="homeBtn" class="px-4 py-2 font-medium transition-colors hover:opacity-80" style="color: hsl(142 76% 36%);">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </button>
+                    <button id="submitBtn" class="px-4 py-2 rounded-lg font-medium transition-colors hover:opacity-90" style="background-color: hsl(142 76% 36%); color: hsl(0 0% 98%);">
+                        <i class="fas fa-plus mr-2"></i>Submit Profile
+                    </button>
+                    <button id="adminBtn" class="px-4 py-2 font-medium transition-colors hover:opacity-80" style="color: hsl(120 10% 50%);">
+                        <i class="fas fa-cog mr-2"></i>Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <!-- Home Page -->
+    <div id="homePage" class="page-content fade-in">
+        <!-- Hero Section -->
+        <div class="text-white relative overflow-hidden" style="background: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 45%));">
+            <!-- Cannabis Art Background -->
+            <div class="absolute inset-0 opacity-10">
+                <svg viewBox="0 0 800 600" class="w-full h-full object-cover">
+                    <!-- Cannabis leaf patterns -->
+                    <g transform="translate(100,150) scale(0.8)">
+                        <path d="M50,100 Q30,80 20,50 Q30,20 50,10 Q70,20 80,50 Q70,80 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q20,90 10,60 Q20,30 50,20 Q80,30 90,60 Q80,90 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q15,85 5,50 Q15,15 50,5 Q85,15 95,50 Q85,85 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q35,110 25,140 Q35,170 50,180 Q65,170 75,140 Q65,110 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q25,115 15,150 Q25,185 50,195 Q75,185 85,150 Q75,115 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q40,125 35,160 Q40,195 50,205 Q60,195 65,160 Q60,125 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q45,130 42,170 Q45,210 50,220 Q55,210 58,170 Q55,130 50,100 Z" fill="currentColor"/>
+                        <line x1="50" y1="100" x2="50" y2="250" stroke="currentColor" stroke-width="3"/>
+                    </g>
+                    <g transform="translate(600,300) scale(1.2) rotate(45)">
+                        <path d="M50,100 Q30,80 20,50 Q30,20 50,10 Q70,20 80,50 Q70,80 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q20,90 10,60 Q20,30 50,20 Q80,30 90,60 Q80,90 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q15,85 5,50 Q15,15 50,5 Q85,15 95,50 Q85,85 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q35,110 25,140 Q35,170 50,180 Q65,170 75,140 Q65,110 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q25,115 15,150 Q25,185 50,195 Q75,185 85,150 Q75,115 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q40,125 35,160 Q40,195 50,205 Q60,195 65,160 Q60,125 50,100 Z" fill="currentColor"/>
+                        <path d="M50,100 Q45,130 42,170 Q45,210 50,220 Q55,210 58,170 Q55,130 50,100 Z" fill="currentColor"/>
+                        <line x1="50" y1="100" x2="50" y2="180" stroke="currentColor" stroke-width="2"/>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center relative z-10">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Welcome to Shake Finder</h2>
+                <p class="text-xl md:text-2xl mb-8 text-green-100 max-w-3xl mx-auto leading-relaxed">A simple platform where licensed cannabis businesses in New Mexico & Oklahoma can showcase their shake to processors</p>
+                <button id="getStartedBtn" class="bg-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center" style="color: hsl(142 76% 36%);">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    Get Started
+                </button>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold mb-4" style="color: hsl(120 10% 10%);">How It Works</h3>
+                <p class="text-lg max-w-2xl mx-auto" style="color: hsl(120 10% 50%);">
+                    Simple steps to get your business profile submitted and reviewed
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: hsl(142 40% 90%); color: hsl(142 76% 36%);">
+                        <i class="fas fa-upload text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-4" style="color: hsl(120 10% 10%);">1. Upload Photos</h4>
+                    <p class="leading-relaxed" style="color: hsl(120 10% 50%);">
+                        Share high-quality images that showcase your shake!
+                    </p>
+                </div>
+
+                <div class="text-center bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: hsl(142 40% 90%); color: hsl(142 76% 36%);">
+                        <i class="fas fa-edit text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-4" style="color: hsl(120 10% 10%);">2. Tell Your Story</h4>
+                    <p class="leading-relaxed" style="color: hsl(120 10% 50%);">
+                        Provide a detailed description of your business, contact, and inventory amounts.
+                    </p>
+                </div>
+
+                <div class="text-center bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: hsl(142 40% 90%); color: hsl(142 76% 36%);">
+                        <i class="fas fa-check text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-4" style="color: hsl(120 10% 10%);">3. Private Review</h4>
+                    <p class="leading-relaxed" style="color: hsl(120 10% 50%);">
+                        Your profile is submitted securely and reviewed privately by our team
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold mb-4" style="color: hsl(120 10% 10%);">Why Choose Us</h3>
+                    <p class="text-lg max-w-2xl mx-auto" style="color: hsl(120 10% 50%);">
+                        We make it easy for businesses to share their story with confidence
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="p-3 rounded-lg" style="background-color: hsl(142 40% 90%);">
+                            <i class="fas fa-shield-alt text-xl" style="color: hsl(142 76% 36%);"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-2" style="color: hsl(120 10% 10%);">Private & Secure</h4>
+                            <p style="color: hsl(120 10% 50%);">All submissions are kept private and only accessible by authorized buyers</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="p-3 rounded-lg" style="background-color: hsl(142 40% 90%);">
+                            <i class="fas fa-rocket text-xl" style="color: hsl(142 76% 36%);"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-2" style="color: hsl(120 10% 10%);">Quick & Easy</h4>
+                            <p style="color: hsl(120 10% 50%);">Simple form with intuitive design makes submission fast and straightforward</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="p-3 rounded-lg" style="background-color: hsl(142 40% 90%);">
+                            <i class="fas fa-mobile-alt text-xl" style="color: hsl(142 76% 36%);"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-2" style="color: hsl(120 10% 10%);">Mobile Friendly</h4>
+                            <p style="color: hsl(120 10% 50%);">Works perfectly on all devices - desktop, tablet, and mobile</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="p-3 rounded-lg" style="background-color: hsl(142 40% 90%);">
+                            <i class="fas fa-heart text-xl" style="color: hsl(142 76% 36%);"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-2" style="color: hsl(120 10% 10%);">No Cost</h4>
+                            <p style="color: hsl(120 10% 50%);">Completely free service for businesses to showcase their profiles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Profile Page -->
+    <div id="submitPage" class="page-content hidden">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-4" style="color: hsl(120 10% 10%);">Submit Your Business Profile</h2>
+                    <p style="color: hsl(120 10% 50%);">Share your business story and showcase what makes you unique</p>
+                </div>
+
+                <form id="profileForm" class="space-y-6">
+                    <div>
+                        <label for="businessName" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Business Name *
+                        </label>
+                        <input type="text" id="businessName" name="businessName" required 
+                               class="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2" 
+                               style="border: 1px solid hsl(120 20% 88%); background-color: white; color: hsl(120 10% 10%); --tw-ring-color: hsl(142 76% 36%);"
+                               placeholder="Enter your business name">
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Contact Email *
+                        </label>
+                        <input type="email" id="email" name="email" required 
+                               class="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2" 
+                               style="border: 1px solid hsl(120 20% 88%); background-color: white; color: hsl(120 10% 10%); --tw-ring-color: hsl(142 76% 36%);"
+                               placeholder="your@email.com">
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Business Description *
+                        </label>
+                        <textarea id="description" name="description" rows="5" required 
+                                  class="w-full px-4 py-3 rounded-lg transition-colors resize-vertical focus:outline-none focus:ring-2" 
+                                  style="border: 1px solid hsl(120 20% 88%); background-color: white; color: hsl(120 10% 10%); --tw-ring-color: hsl(142 76% 36%);"
+                                  placeholder="Tell us about your business, services, and what makes you unique..."></textarea>
+                        <p class="text-sm mt-1" style="color: hsl(120 10% 50%);">Minimum 50 characters</p>
+                    </div>
+
+                    <div>
+                        <label for="images" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Business Images
+                        </label>
+                        <div class="border-2 border-dashed rounded-lg p-6 text-center hover:border-opacity-60 transition-colors cursor-pointer" style="border-color: hsl(120 20% 88%);" onclick="document.getElementById('images').click();">
+                            <input type="file" id="images" name="images" multiple accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <i class="fas fa-cloud-upload-alt text-3xl mb-4 block" style="color: hsl(120 10% 50%);"></i>
+                            <p class="mb-2" style="color: hsl(120 10% 50%);">Click to upload images or drag and drop</p>
+                            <p class="text-sm" style="color: hsl(120 10% 50%);">PNG, JPG, GIF up to 5MB each (max 5 images)</p>
+                        </div>
+                        <div id="imagePreview" class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full py-3 px-6 rounded-lg text-lg font-semibold transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: hsl(142 76% 36%); color: hsl(0 0% 98%); --tw-ring-color: hsl(142 76% 36%);">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Submit Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Page -->
+    <div id="adminLoginPage" class="page-content hidden">
+        <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="text-center mb-8">
+                    <i class="fas fa-lock text-4xl mb-4" style="color: hsl(120 10% 50%);"></i>
+                    <h2 class="text-2xl font-bold mb-2" style="color: hsl(120 10% 10%);">Admin Access</h2>
+                    <p style="color: hsl(120 10% 50%);">Enter your credentials to access the admin panel</p>
+                </div>
+
+                <form id="adminLoginForm" class="space-y-6">
+                    <div>
+                        <label for="adminEmail" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Email Address
+                        </label>
+                        <input type="email" id="adminEmail" name="adminEmail" required 
+                               class="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2" 
+                               style="border: 1px solid hsl(120 20% 88%); background-color: white; color: hsl(120 10% 10%); --tw-ring-color: hsl(142 76% 36%);"
+                               placeholder="your@email.com">
+                    </div>
+
+                    <div>
+                        <label for="adminPassword" class="block text-sm font-medium mb-2" style="color: hsl(120 10% 10%);">
+                            Password
+                        </label>
+                        <input type="password" id="adminPassword" name="adminPassword" required 
+                               class="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2" 
+                               style="border: 1px solid hsl(120 20% 88%); background-color: white; color: hsl(120 10% 10%); --tw-ring-color: hsl(142 76% 36%);"
+                               placeholder="Enter password">
+                    </div>
+
+                    <div id="loginError" class="hidden border rounded-lg px-4 py-3 text-sm" style="background-color: hsl(0 84% 95%); border-color: hsl(0 84% 85%); color: hsl(0 84% 35%);">
+                        Invalid credentials. Please try again.
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-6 rounded-lg text-lg font-semibold transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: hsl(142 76% 36%); color: hsl(0 0% 98%); --tw-ring-color: hsl(142 76% 36%);">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="adminPage" class="page-content hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold" style="color: hsl(120 10% 10%);">Business Profile Submissions</h2>
+                        <p class="mt-2" style="color: hsl(120 10% 50%);">Manage and review submitted business profiles</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="totalCount" class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: hsl(142 40% 90%); color: hsl(142 76% 36%);">
+                            0 submissions
+                        </span>
+                        <button id="logoutBtn" class="px-4 py-2 rounded-lg transition-colors hover:opacity-90" style="background-color: hsl(120 10% 50%); color: white;">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                        <button id="clearAllBtn" class="px-4 py-2 rounded-lg transition-colors hover:opacity-90" style="background-color: hsl(0 84% 60%); color: white;">
+                            <i class="fas fa-trash mr-2"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <div id="submissionsList" class="space-y-6"></div>
+
+                <div id="emptyState" class="text-center py-12">
+                    <i class="fas fa-inbox text-6xl mb-4" style="color: hsl(120 10% 50%);"></i>
+                    <h3 class="text-xl mb-2" style="color: hsl(120 10% 50%);">No submissions yet</h3>
+                    <p style="color: hsl(120 10% 50%);">Business profile submissions will appear here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
+            <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style="background-color: hsl(142 40% 90%);">
+                <i class="fas fa-check text-2xl" style="color: hsl(142 76% 36%);"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="color: hsl(120 10% 10%);">Profile Submitted!</h3>
+            <p class="mb-6" style="color: hsl(120 10% 50%);">Thank you for submitting your business profile. We'll review it shortly.</p>
+            <button id="closeModal" class="px-6 py-2 rounded-lg transition-colors hover:opacity-90" style="background-color: hsl(142 76% 36%); color: hsl(0 0% 98%);">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://qrcmkaasinccmazkhjos.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyY21rYWFzaW5jY21hemtoam9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMjI3MzMsImV4cCI6MjA2ODg5ODczM30.A0bqHs5oAogDsZ7gsmN9XeQaic38nCmshuj_fb3oV9M';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`;
+            
+            const colors = {
+                success: 'background-color: hsl(142 76% 36%); color: hsl(0 0% 98%);',
+                error: 'background-color: hsl(0 84% 60%); color: white;',
+                warning: 'background-color: hsl(45 84% 60%); color: white;'
+            };
+            
+            toast.style = colors[type] || colors.success;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'} mr-2"></i>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 opacity-75 hover:opacity-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Navigation functionality
+        const homeBtn = document.getElementById('homeBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const adminBtn = document.getElementById('adminBtn');
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        
+        const homePage = document.getElementById('homePage');
+        const submitPage = document.getElementById('submitPage');
+        const adminLoginPage = document.getElementById('adminLoginPage');
+        const adminPage = document.getElementById('adminPage');
+
+        function showPage(pageToShow) {
+            [homePage, submitPage, adminLoginPage, adminPage].forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('fade-in');
+            });
+            
+            setTimeout(() => {
+                pageToShow.classList.remove('hidden');
+                pageToShow.classList.add('fade-in');
+            }, 100);
+        }
+
+        function isAdminLoggedIn() {
+            return sessionStorage.getItem('adminLoggedIn') === 'true';
+        }
+
+        function loginAdmin() {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('adminLoggedIn');
+            showPage(homePage);
+        }
+
+        homeBtn.addEventListener('click', () => showPage(homePage));
+        submitBtn.addEventListener('click', () => showPage(submitPage));
+        getStartedBtn.addEventListener('click', () => showPage(submitPage));
+        adminBtn.addEventListener('click', () => {
+            if (isAdminLoggedIn()) {
+                showPage(adminPage);
+                loadSubmissions();
+            } else {
+                showPage(adminLoginPage);
+            }
+        });
+
+        // Admin login form
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+            submitBtn.disabled = true;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('admin_users')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+                
+                if (error || !data) {
+                    throw new Error('Invalid credentials');
+                }
+                
+                if (data.password_hash === btoa(password)) {
+                    loginAdmin();
+                    showPage(adminPage);
+                    await loadSubmissions();
+                    e.target.reset();
+                    errorDiv.classList.add('hidden');
+                    showToast('Successfully logged in!');
+                } else {
+                    throw new Error('Invalid credentials');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.classList.remove('hidden');
+                document.getElementById('adminPassword').value = '';
+                showToast('Invalid credentials. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                submitBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            logoutAdmin();
+            showToast('Successfully logged out!');
+        });
+
+        // Image upload handling
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            const previewContainer = document.getElementById('imagePreview');
+            
+            previewContainer.innerHTML = '';
+            const limitedFiles = files.slice(0, 5);
+            
+            limitedFiles.forEach((file, index) => {
+                if (file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const div = document.createElement('div');
+                        div.className = 'relative';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}" class="image-preview border" style="border-color: hsl(120 20% 88%);">
+                            <button type="button" onclick="removeImage(this)" 
+                                class="absolute top-2 right-2 rounded-full w-6 h-6 flex items-center justify-center text-xs hover:opacity-80 transition-opacity" style="background-color: hsl(0 84% 60%); color: white;">
+                                ×
+                            </button>
+                        `;
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function removeImage(button) {
+            button.parentElement.remove();
+        }
+
+        // Form submission
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const description = formData.get('description');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            if (description.length < 50) {
+                showToast('Please provide a more detailed description (minimum 50 characters)', 'warning');
+                return;
+            }
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            try {
+                const imageFiles = document.getElementById('images').files;
+                
+                const imagePromises = Array.from(imageFiles).map(file => {
+                    return new Promise((resolve) => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        } else {
+                            resolve(null);
+                        }
+                    });
+                });
+                
+                const imageResults = await Promise.all(imagePromises);
+                const validImages = imageResults.filter(img => img !== null);
+                
+                const { data, error } = await supabase
+                    .from('business_profiles')
+                    .insert([
+                        {
+                            business_name: formData.get('businessName'),
+                            email: formData.get('email'),
+                            description: formData.get('description'),
+                            images: validImages
+                        }
+                    ]);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                document.getElementById('successModal').classList.remove('hidden');
+                document.getElementById('successModal').classList.add('flex');
+                
+                e.target.reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                showToast('Profile submitted successfully!');
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                showToast('There was an error submitting your profile. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit Profile';
+                submitBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+            const modal = document.getElementById('successModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            showPage(homePage);
+        });
+
+        // Admin functionality
+        async function loadSubmissions() {
+            try {
+                const submissionsList = document.getElementById('submissionsList');
+                const emptyState = document.getElementById('emptyState');
+                const totalCount = document.getElementById('totalCount');
+                
+                submissionsList.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-2xl" style="color: hsl(120 10% 50%);"></i><p class="mt-2" style="color: hsl(120 10% 50%);">Loading submissions...</p></div>';
+                emptyState.classList.add('hidden');
+                
+                const { data: submissions, error } = await supabase
+                    .from('business_profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                totalCount.textContent = `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`;
+                
+                if (submissions.length === 0) {
+                    submissionsList.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                
+                emptyState.classList.add('hidden');
+                submissionsList.innerHTML = submissions.map(submission => {
+                    const dateFormatted = new Date(submission.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    return `
+                        <div class="border rounded-lg p-6 hover:shadow-md transition-shadow" style="border-color: hsl(120 20% 88%);">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-semibold" style="color: hsl(120 10% 10%);">${submission.business_name}</h3>
+                                    <p style="color: hsl(120 10% 50%);">${submission.email}</p>
+                                    <p class="text-sm mt-1" style="color: hsl(120 10% 50%);">Submitted: ${dateFormatted}</p>
+                                </div>
+                                <button onclick="deleteSubmission('${submission.id}')" 
+                                    class="transition-colors hover:opacity-80" style="color: hsl(0 84% 60%);">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h4 class="font-medium mb-2" style="color: hsl(120 10% 10%);">Description:</h4>
+                                <p class="leading-relaxed" style="color: hsl(120 10% 30%);">${submission.description}</p>
+                            </div>
+                            
+                            ${submission.images && submission.images.length > 0 ? `
+                                <div>
+                                    <h4 class="font-medium mb-2" style="color: hsl(120 10% 10%);">Images (${submission.images.length}):</h4>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        ${submission.images.map((img, index) => `
+                                            <img src="${img}" alt="Business image ${index + 1}" 
+                                                class="w-full h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
+                                                style="border-color: hsl(120 20% 88%);"
+                                                onclick="openImageModal('${img}')">
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                document.getElementById('submissionsList').innerHTML = 
+                    '<div class="text-center py-8" style="color: hsl(0 84% 60%);"><i class="fas fa-exclamation-triangle text-2xl mb-2"></i><p>Error loading submissions. Please try again.</p></div>';
+                showToast('Error loading submissions. Please try again.', 'error');
+            }
+        }
+
+        async function deleteSubmission(id) {
+            if (confirm('Are you sure you want to delete this submission?')) {
+                try {
+                    const { error } = await supabase
+                        .from('business_profiles')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    await loadSubmissions();
+                    showToast('Submission deleted successfully!');
+                } catch (error) {
+                    console.error('Error deleting submission:', error);
+                    showToast('Error deleting submission. Please try again.', 'error');
+                }
+            }
+        }
+
+        document.getElementById('clearAllBtn').addEventListener('click', async function() {
+            if (confirm('Are you sure you want to delete ALL submissions? This cannot be undone.')) {
+                try {
+                    const { error } = await supabase
+                        .from('business_profiles')
+                        .delete()
+                        .neq('id', '00000000-0000-0000-0000-000000000000');
+                    
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    await loadSubmissions();
+                    showToast('All submissions cleared successfully!');
+                } catch (error) {
+                    console.error('Error clearing submissions:', error);
+                    showToast('Error clearing submissions. Please try again.', 'error');
+                }
+            }
+        });
+
+        function openImageModal(src) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="max-w-4xl max-h-screen p-4">
+                    <img src="${src}" alt="Full size image" class="max-w-full max-h-full object-contain rounded">
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                        class="absolute top-4 right-4 bg-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-100" style="color: hsl(120 10% 10%);">
+                        ×
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage(homePage);
+        });
+    </script>
+</body>
 </html>
