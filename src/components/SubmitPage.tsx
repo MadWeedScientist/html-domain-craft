@@ -90,6 +90,22 @@ export const SubmitPage = ({ onSuccess }: SubmitPageProps) => {
         ])
       
       if (error) throw error
+
+      // Send notification email
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            businessName,
+            email,
+            description,
+            imageCount: imageResults.length
+          }
+        })
+        console.log('Notification email sent')
+      } catch (emailError) {
+        console.error('Failed to send notification email:', emailError)
+        // Don't block the submission if email fails
+      }
       
       // Reset form
       setBusinessName("")
