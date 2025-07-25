@@ -35,6 +35,7 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
       }
       
       // Simple password verification (in production, use proper hashing)
+      console.log('Expected hash:', btoa(password), 'Actual hash:', data.password_hash)
       if (data.password_hash === btoa(password)) {
         sessionStorage.setItem('adminLoggedIn', 'true')
         onLoginSuccess()
