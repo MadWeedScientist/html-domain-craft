@@ -78,7 +78,7 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
           <p className="text-muted-foreground">Enter your credentials to access the admin panel</p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" onClick={() => console.log('Form clicked')}>
             <div>
               <Label htmlFor="adminEmail">Email Address</Label>
               <Input
@@ -116,6 +116,13 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
               disabled={isLoading}
               className="w-full text-lg font-semibold"
               size="lg"
+              onClick={(e) => {
+                console.log('Button clicked!', e)
+                if (!email || !password) {
+                  e.preventDefault()
+                  alert('Please fill in both email and password')
+                }
+              }}
             >
               {isLoading ? (
                 <>Signing In...</>
