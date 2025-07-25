@@ -12,8 +12,6 @@ interface AdminLoginPageProps {
 }
 
 export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
-  console.log('AdminLoginPage component loaded')
-  alert('AdminLoginPage loaded - if you see this, click OK and try logging in')
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -24,44 +22,15 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
     setIsLoading(true)
     setError("")
     
-    try {
-      // Check for hardcoded credentials first
-      if (email === 'madweedscientist@gmail.com' && password === '420br549') {
-        sessionStorage.setItem('adminLoggedIn', 'true')
-        onLoginSuccess()
-        return
-      }
-      
-      // Fallback to database check
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle()
-      
-      if (error) {
-        throw new Error('Database error')
-      }
-      
-      if (!data) {
-        throw new Error('Invalid credentials')
-      }
-      
-      // Check password hash
-      if (data.password_hash === btoa(password)) {
-        sessionStorage.setItem('adminLoggedIn', 'true')
-        onLoginSuccess()
-        setEmail("")
-        setPassword("")
-      } else {
-        throw new Error('Invalid credentials')
-      }
-    } catch (error) {
-      setError('Invalid credentials. Please try again.')
-      setPassword("")
-    } finally {
-      setIsLoading(false)
+    // Direct credential check - no database needed
+    if (email === 'madweedscientist@gmail.com' && password === '420br549') {
+      sessionStorage.setItem('adminLoggedIn', 'true')
+      onLoginSuccess()
+      return
     }
+    
+    setError('Invalid credentials. Use: madweedscientist@gmail.com / 420br549')
+    setIsLoading(false)
   }
 
   return (
