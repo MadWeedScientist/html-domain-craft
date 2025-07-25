@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -66,6 +66,14 @@ export const AdminLoginPage = ({ onLoginSuccess }: AdminLoginPageProps) => {
       setIsLoading(false)
     }
   }
+
+  // Test Supabase connection
+  useEffect(() => {
+    console.log('AdminLoginPage mounted')
+    supabase.from('admin_users').select('email').limit(1).then(result => {
+      console.log('Supabase test result:', result)
+    })
+  }, [])
 
   return (
     <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-16 fade-in">
