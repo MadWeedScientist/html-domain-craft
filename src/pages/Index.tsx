@@ -13,7 +13,11 @@ const Index = () => {
     sessionStorage.getItem('adminLoggedIn') === 'true'
   )
 
+  console.log('Current page:', currentPage)
+  console.log('Is admin logged in:', isAdminLoggedIn)
+
   const handleNavigate = (page: Page) => {
+    console.log('Navigating to:', page)
     setCurrentPage(page)
   }
 
